@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "source": "DESIGN.md",
+  "tokens": {
+    "ink": "#572b3d",
+    "rose": "#df6f98",
+    "roseDeep": "#a73e66",
+    "blush": "#fbe4ec",
+    "paper": "#fffafc"
+  }
+}
