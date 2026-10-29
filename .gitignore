@@ -1,0 +1,15 @@
+# Local dependencies
+node_modules/
+
+# Local design-tool settings and Markdown notes
+.impeccable/
+*.md
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Operating-system files
+.DS_Store
+Thumbs.db
