@@ -1,6 +1,7 @@
 const envelope = document.querySelector('#envelope');
 const letter = document.querySelector('#letter');
 const openLetter = document.querySelector('#open-letter');
+const closeLetter = document.querySelector('#close-letter');
 const musicToggle = document.querySelector('#music-toggle');
 const shareButton = document.querySelector('#share-button');
 const toast = document.querySelector('#toast');
@@ -14,12 +15,28 @@ function showToast(message) {
 function revealLetter() {
   envelope.classList.add('open');
   envelope.setAttribute('aria-expanded', 'true');
+  letter.setAttribute('aria-hidden', 'false');
   letter.classList.add('show');
-  window.setTimeout(() => letter.scrollIntoView({ behavior: 'smooth', block: 'center' }), 520);
+  closeLetter.focus();
+}
+
+function hideLetter() {
+  letter.classList.remove('show');
+  letter.setAttribute('aria-hidden', 'true');
+  envelope.classList.remove('open');
+  envelope.setAttribute('aria-expanded', 'false');
+  openLetter.focus();
 }
 
 envelope.addEventListener('click', revealLetter);
 openLetter.addEventListener('click', revealLetter);
+closeLetter.addEventListener('click', hideLetter);
+letter.addEventListener('click', (event) => { if (event.target === letter) hideLetter(); });
+document.addEventListener('keydown', (event) => {
+  if (!letter.classList.contains('show')) return;
+  if (event.key === 'Escape') hideLetter();
+  if (event.key === 'Tab') { event.preventDefault(); closeLetter.focus(); }
+});
 
 function populateEffects() {
   const petals = document.querySelector('.petal-field');
@@ -96,4 +113,4 @@ shareButton.addEventListener('click', async () => {
 });
 
 populateEffects();
-console.assert(envelope && letter && musicToggle && shareButton, 'Thiếu một điều khiển chính của trang');
+console.assert(envelope && letter && closeLetter && musicToggle && shareButton, 'Thiếu một điều khiển chính của trang');
