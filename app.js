@@ -3,6 +3,7 @@ const letter = document.querySelector('#letter');
 const openLetter = document.querySelector('#open-letter');
 const closeLetter = document.querySelector('#close-letter');
 const musicToggle = document.querySelector('#music-toggle');
+const music = document.querySelector('#background-music');
 const shareButton = document.querySelector('#share-button');
 const toast = document.querySelector('#toast');
 
@@ -62,44 +63,22 @@ function populateEffects() {
   }
 }
 
-let audioContext;
-let musicTimer;
-const notes = [261.63, 329.63, 392, 523.25, 392, 329.63];
-function playNote(frequency, time) {
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-  oscillator.type = 'sine';
-  oscillator.frequency.value = frequency;
-  gain.gain.setValueAtTime(0.0001, time);
-  gain.gain.exponentialRampToValueAtTime(0.035, time + 0.05);
-  gain.gain.exponentialRampToValueAtTime(0.0001, time + 1.1);
-  oscillator.connect(gain).connect(audioContext.destination);
-  oscillator.start(time);
-  oscillator.stop(time + 1.15);
-}
-function startMusic() {
-  audioContext = audioContext || new AudioContext();
-  const schedule = () => {
-    const now = audioContext.currentTime;
-    notes.forEach((note, index) => playNote(note, now + index * .62));
-  };
-  schedule();
-  musicTimer = window.setInterval(schedule, notes.length * 620);
+async function startMusic() {
+  music.volume = 0.8;
+  try { await music.play(); } catch { return; }
   musicToggle.setAttribute('aria-pressed', 'true');
   musicToggle.setAttribute('aria-label', 'Tắt nhạc nền');
   musicToggle.querySelector('span').textContent = 'Tắt nhạc';
 }
 function stopMusic() {
-  window.clearInterval(musicTimer);
-  audioContext?.suspend();
+  music.pause();
   musicToggle.setAttribute('aria-pressed', 'false');
   musicToggle.setAttribute('aria-label', 'Bật nhạc nền');
   musicToggle.querySelector('span').textContent = 'Nhạc nền';
 }
 musicToggle.addEventListener('click', async () => {
   if (musicToggle.getAttribute('aria-pressed') === 'true') return stopMusic();
-  if (audioContext?.state === 'suspended') await audioContext.resume();
-  startMusic();
+  await startMusic();
 });
 
 shareButton.addEventListener('click', async () => {
@@ -113,4 +92,5 @@ shareButton.addEventListener('click', async () => {
 });
 
 populateEffects();
-console.assert(envelope && letter && closeLetter && musicToggle && shareButton, 'Thiếu một điều khiển chính của trang');
+startMusic();
+console.assert(envelope && letter && closeLetter && musicToggle && music && shareButton, 'Thiếu một điều khiển chính của trang');
